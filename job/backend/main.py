@@ -41,7 +41,13 @@ app = FastAPI(title="ShopFlow API", version="1.0.0",
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+origins = [
+    "https://capstone-project-490610.web.app",
+    "https://adesh.online",
+    "https://www.adesh.online",
+    "http://localhost:3000",
+    "http://localhost:8000"
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
