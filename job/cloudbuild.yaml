@@ -14,7 +14,7 @@ steps:
   args:
     - '-c'
     - |
-      gcloud compute ssh backend-mig-xwml \
+      gcloud compute ssh backend-mig-5fv5 \
         --zone=asia-south1-b \
         --tunnel-through-iap \
         --project=capstone-project-490610 \
