@@ -38,8 +38,8 @@
         gcloud compute ssh $$vm_name \
           --zone=$$vm_zone \
           --tunnel-through-iap \
-          --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Done $$vm_name"
-      done <<< "$$VMS"
+          --project=capstone-project-490610 \
+          --command="cd /app/capstone ...
 
 - name: 'node:20'
   id: 'deploy-frontend'
