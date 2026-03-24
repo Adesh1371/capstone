@@ -1,5 +1,4 @@
-﻿steps:
-
+steps:
 - name: 'python:3.11'
   id: 'install-backend'
   entrypoint: 'bash'
@@ -9,7 +8,6 @@
       cd job/backend
       pip install -r ../requirements.txt
       echo "Backend dependencies installed"
-
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'deploy-backend-primary'
   entrypoint: 'bash'
@@ -20,8 +18,7 @@
         --zone=asia-south1-b \
         --tunnel-through-iap \
         --project=capstone-project-490610 \
-        --command="cd /app/capstone ...
-
+        --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Deploy primary done"
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'deploy-backend-replica'
   entrypoint: 'bash'
@@ -39,8 +36,8 @@
           --zone=$$vm_zone \
           --tunnel-through-iap \
           --project=capstone-project-490610 \
-          --command="cd /app/capstone ...
-
+          --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Done $$vm_name"
+      done <<< "$$VMS"
 - name: 'node:20'
   id: 'deploy-frontend'
   secretEnv: ['_FIREBASE_TOKEN']
@@ -53,20 +50,16 @@
       firebase deploy --only hosting \
         --project capstone-project-490610 \
         --token $$_FIREBASE_TOKEN
-
 - name: 'gcr.io/cloud-builders/curl'
   id: 'verify'
   args:
     - '-f'
     - 'https://api.adesh.online/api/health'
-
 availableSecrets:
   secretManager:
   - versionName: projects/capstone-project-490610/secrets/firebase-ci-token/versions/latest
     env: '_FIREBASE_TOKEN'
-
 options:
   logging: CLOUD_LOGGING_ONLY
   machineType: 'E2_MEDIUM'
-
 timeout: '1200s'
