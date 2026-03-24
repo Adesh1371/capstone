@@ -1,6 +1,5 @@
-steps:
+﻿steps:
 
-# ── STEP 1: Install dependencies ──
 - name: 'python:3.11'
   id: 'install-backend'
   entrypoint: 'bash'
@@ -11,7 +10,6 @@ steps:
       pip install -r ../requirements.txt
       echo "Backend dependencies installed"
 
-# ── STEP 2: Deploy backend to primary VM ──
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'deploy-backend-primary'
   entrypoint: 'bash'
@@ -23,27 +21,25 @@ steps:
         --tunnel-through-iap \
         --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Deploy primary done"
 
-# ── STEP 3: Deploy backend to all MIG VMs ──
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'deploy-backend-replica'
   entrypoint: 'bash'
   args:
     - '-c'
     - |
-      VMS=$(gcloud compute instances list \
+      VMS=$$(gcloud compute instances list \
         --filter="name~backend-mig" \
         --format="value(name,zone)" \
         --project=capstone-project-490610)
-      echo "Found VMs: $VMS"
-      while IFS=$'\t' read -r vm_name vm_zone; do
-        echo "Deploying to $vm_name in $vm_zone"
-        gcloud compute ssh $vm_name \
-          --zone=$vm_zone \
+      echo "Found VMs: $$VMS"
+      while IFS=$$'\t' read -r vm_name vm_zone; do
+        echo "Deploying to $$vm_name in $$vm_zone"
+        gcloud compute ssh $$vm_name \
+          --zone=$$vm_zone \
           --tunnel-through-iap \
-          --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Done $vm_name"
-      done <<< "$VMS"
+          --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Done $$vm_name"
+      done <<< "$$VMS"
 
-# ── STEP 4: Deploy frontend to Firebase Hosting ──
 - name: 'node:20'
   id: 'deploy-frontend'
   secretEnv: ['_FIREBASE_TOKEN']
@@ -57,7 +53,6 @@ steps:
         --project capstone-project-490610 \
         --token $$_FIREBASE_TOKEN
 
-# ── STEP 5: Verify deployment ──
 - name: 'gcr.io/cloud-builders/curl'
   id: 'verify'
   args:
@@ -68,7 +63,6 @@ availableSecrets:
   secretManager:
   - versionName: projects/capstone-project-490610/secrets/firebase-ci-token/versions/latest
     env: '_FIREBASE_TOKEN'
-
 
 options:
   logging: CLOUD_LOGGING_ONLY
