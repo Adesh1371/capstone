@@ -69,8 +69,6 @@ availableSecrets:
   - versionName: projects/capstone-project-490610/secrets/firebase-ci-token/versions/latest
     env: '_FIREBASE_TOKEN'
 
-substitutions:
-  _FIREBASE_TOKEN: ''
 
 options:
   logging: CLOUD_LOGGING_ONLY
