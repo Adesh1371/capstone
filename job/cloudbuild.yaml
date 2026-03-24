@@ -19,7 +19,8 @@
       gcloud compute ssh backend-mig-xwml \
         --zone=asia-south1-b \
         --tunnel-through-iap \
-        --command="cd /app/capstone && git pull origin main && cd job/backend && python3.11 -m pip install -r ../requirements.txt && pm2 restart backend --update-env && echo Deploy primary done"
+        --project=capstone-project-490610 \
+        --command="cd /app/capstone ...
 
 - name: 'gcr.io/cloud-builders/gcloud'
   id: 'deploy-backend-replica'
