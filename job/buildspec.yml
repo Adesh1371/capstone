@@ -5,12 +5,12 @@ phases:
     runtime-versions:
       python: 3.11
     commands:
+      - pip install --upgrade pip
       - pip install -r requirements.txt
 
   build:
     commands:
       - echo "Build started"
-      - echo "Running tests..."
 
   post_build:
     commands:
@@ -19,4 +19,5 @@ phases:
 artifacts:
   files:
     - '**/*'
+  base-directory: .
   discard-paths: no
