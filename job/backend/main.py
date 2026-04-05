@@ -45,6 +45,7 @@ origins = [
     "https://capstone-project-490610.web.app",
     "https://adesh.online",
     "https://www.adesh.online",
+    "https://main.dxxegfccgtswk.amplifyapp.com",
     "http://localhost:3000",
     "http://localhost:8000"
 ]
