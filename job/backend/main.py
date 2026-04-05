@@ -46,6 +46,7 @@ origins = [
     "https://adesh.online",
     "https://www.adesh.online",
     "https://main.dxxegfccgtswk.amplifyapp.com",
+    "https://aws-api.adesh.online",
     "http://localhost:3000",
     "http://localhost:8000"
 ]
